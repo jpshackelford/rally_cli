@@ -1,0 +1,2 @@
+Add ConfigurationFile and RallyHelper.
+Add Hooks for commands and reports to be added from other gems
