@@ -1,5 +1,4 @@
 .autotest
-.gitignore
 .loadpath
 .project
 History.txt
@@ -7,12 +6,18 @@ Manifest.txt
 README.txt
 Rakefile
 fixtures/burndown.png
+fixtures/defect.png
 fixtures/test_three_chart_page.rb
 lib/rally_velocity_chart.rb
 lib/rally_velocity_chart/a3_report.rb
 lib/rally_velocity_chart/burn_down_chart.rb
 lib/rally_velocity_chart/burn_down_data.rb
+lib/rally_velocity_chart/daily_counter.rb
+lib/rally_velocity_chart/defect_arrival_kill_data.rb
+lib/rally_velocity_chart/defect_chart.rb
+lib/rally_velocity_chart/ext/date.rb
 lib/rally_velocity_chart/rally_helper/iteration_cumulative_flow.rb
+lib/rally_velocity_chart/rally_helper/project_defects.rb
 lib/rally_velocity_chart/rally_helper/recent_iterations.rb
 lib/rally_velocity_chart/three_chart_page.rb
 lib/rally_velocity_chart/velocity_chart_command.rb
@@ -20,7 +25,12 @@ lib/rally_velocity_chart/velocity_chart_parser.rb
 spec/a3_report_spec.rb
 spec/burn_down_chart_spec.rb
 spec/burn_down_data_spec.rb
+spec/daily_counter_spec.rb
+spec/defect_arrival_kill_data_spec.rb
+spec/defect_chart_spec.rb
+spec/ext/date_spec.rb
 spec/rally_helper/iteration_cumulative_flow_spec.rb
+spec/rally_helper/project_defects_spec.rb
 spec/rally_helper/recent_iterations_spec.rb
 spec/rally_velocity_chart_spec.rb
 spec/spec_helper.rb

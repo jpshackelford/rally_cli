@@ -63,20 +63,34 @@ module RallyVelocityChart
       puts "Creating report for #{projects.join(', ')}"
       puts "Acquiring data for:"
       report = A3Report.new( file )
+      
+      # A page for each project
       projects.each do |project|
         print project        
         page = ThreeChartPage.new
+        # Use project as page title
         page.title = project
-        iters = rally_helper.recent_iterations( project, 3 ).reverse
+        
+        # Add recent iterations charts 
+        iters = rally_helper.recent_iterations( project, 2 ).reverse
         iters.each do |iter|
           print " #{iter.name} " 
           data = rally_helper.iteration_cumulative_flow( iter.oid )
           page.labels << iter.name
           page.charts << burn_down_image( data )        
         end
-        puts "   (done)"
+        
+        # Add defect chart
+        print " defect data "
+        data = rally_helper.project_defects( project )
+        page.labels << "Defect Summary"
+        page.charts << defect_image( data )
+        
+        # Add the page to the report
         report << page
+        puts "   (done)"
       end
+      
       report.save
       puts "Saved PDF report at #{file}."
     end    
@@ -85,6 +99,10 @@ module RallyVelocityChart
    
    def burn_down_image( data )
      ::GChart::BurnDownChart.new( BurnDownData.new( data )).fetch
+   end
+   
+   def defect_image( data )
+     ::GChart::DefectChart.new( DefectArrivalKillData.new( data )).fetch
    end
    
   end # parser class

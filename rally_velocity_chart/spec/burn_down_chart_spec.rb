@@ -19,9 +19,9 @@ describe GChart::BurnDownChart do
     @c.fetch.should match_image('burndown.png')
   end
 
-  #it "labels the chart with the days of the iteration" do
-  #  @c.to_url.should include( esc('chxl=0:|1/1||1/2||1/3||'))
-  #end
+#  it "labels the chart with the days of the iteration" do
+#    @c.to_url.should include( esc('chxl=0:|1/1||1/2||1/3||'))
+#  end
 
   it "draws burndown lines from todo data" do
     @c.to_url.should include( esc('t:100.0,0.0,60.0,0.0,10.0'))
@@ -39,9 +39,23 @@ describe GChart::BurnDownChart do
     # third element is max todo for burn down, plan estimate for burn up
     @c.to_url.should include( esc("chxr=0,0,10.0|1,0,6")) 
   end
+    
+  it "renders colors in the order given" do
+   @c.to_url =~ /chco=(\w{6}),(\w{6}),(\w{6})/
+   colors = [$1,$2,$3]
+   @c.colors.should == colors 
+  end
   
-  it "uses the correct colors" do
-    @c.to_url.should include( esc("chco=026cfd,76c10f,f5d100"))
+  it "colors todo bars blue" do
+    @c.colors[0].should == '026cfd'     
+  end
+
+  it "colors accepted bars green" do
+    @c.colors[1].should == '76c10f'
+  end
+  
+  it "colors completed bars gold" do
+    @c.colors[2].should == 'f5d100'  
   end
   
   it "can be constructed with an object as an alternative to a hash" do
@@ -59,10 +73,5 @@ describe GChart::BurnDownChart do
   it "encodes data properly even when all values are zero" do
     lambda{ @c.enc_set([0.0,0.0,0.0], 0.0) }.should_not raise_error  
   end
-  
-  # alias
-  def esc( string )
-    URI.escape( string )
-  end  
   
 end

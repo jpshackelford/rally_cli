@@ -15,3 +15,9 @@ class ::RallyRestAPI
   def initialize( options )    
   end
 end
+
+
+# alias
+def esc( string )
+  URI.escape( string )
+end 
