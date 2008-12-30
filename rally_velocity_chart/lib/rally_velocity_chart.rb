@@ -43,6 +43,8 @@ module RallyVelocityChart
 
 end  # module RallyVelocityChart
 
+require 'date'
+
 require 'rubygems'
 require 'rally_cli'
 require 'pdf/writer'
