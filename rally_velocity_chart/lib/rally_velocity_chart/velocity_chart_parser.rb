@@ -68,23 +68,21 @@ module RallyVelocityChart
       projects.each do |project|
         print project        
         page = ThreeChartPage.new
+
         # Use project as page title
         page.title = project
         
         # Add recent iterations charts 
-        iters = rally_helper.recent_iterations( project, 2 ).reverse
-        iters.each do |iter|
-          print " #{iter.name} " 
-          data = rally_helper.iteration_cumulative_flow( iter.oid )
-          page.labels << iter.name
-          page.charts << burn_down_image( data )        
-        end
+        print ' Burn Down Chart '
+        add_burn_down_chart( project, page )     
         
-        # Add defect chart
-        print " defect data "
-        data = rally_helper.project_defects( project )
-        page.labels << "Defect Summary"
-        page.charts << defect_image( data )
+        # Add defect chart        
+        print ' Defect Chart '
+        add_defect_chart( project, page )
+        
+        # Add velocity chart
+        print ' Velocity Chart '
+        add_velocity_chart( project, page )
         
         # Add the page to the report
         report << page
@@ -97,12 +95,32 @@ module RallyVelocityChart
    
    private
    
-   def burn_down_image( data )
-     ::GChart::BurnDownChart.new( BurnDownData.new( data )).fetch
+   def add_burn_down_chart( project, page )
+     iters = rally_helper.recent_iterations( project, 1 )
+     iteration = iters.first
+     data = rally_helper.iteration_cumulative_flow( iteration.oid )
+     chart = ::GChart::BurnDownChart.new( BurnDownData.new( data ))
+     page.labels << "#{iteration.name} Burn Down"
+     page.charts << chart.fetch     
    end
    
-   def defect_image( data )
-     ::GChart::DefectChart.new( DefectArrivalKillData.new( data )).fetch
+   def add_defect_chart( project, page )
+      data = rally_helper.project_defects( project )
+      chart = ::GChart::DefectChart.new( DefectArrivalKillData.new( data ))
+      page.labels << "Defect Summary"      
+      page.charts << chart.fetch
+   end
+   
+   def add_velocity_chart( project, page )
+     iters = rally_helper.recent_iterations( project, 8 )     
+     data = iters.inject({}) do |iterations, iteration|
+       summary_data = rally_helper.iteration_cumulative_flow( iteration.oid )
+       iterations.store( iteration.name, summary_data )
+       iterations
+     end
+     chart = ::GChart::VelocityChart.new( VelocityData.new( data ))
+     page.labels << "Velocity"
+     page.charts << chart.fetch
    end
    
   end # parser class
